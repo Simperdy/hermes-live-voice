@@ -396,7 +396,7 @@ assert.equal(V3_EXPERIMENTAL_VOICES.length, expectedExperimental.length);
 assert.equal(new Set([...V3_VOICES, ...V3_EXPERIMENTAL_VOICES]).size, V3_VOICES.length + V3_EXPERIMENTAL_VOICES.length);
 for (const [voice, [name, language]] of Object.entries(expectedVoiceLanguages)) {
   assert.equal(effVoiceFor('codex', voice), voice);
-  assert.equal(voiceOptionLabel(voice), `${name} · ${language}`);
+  assert.equal(voiceOptionLabel(voice), name);
   assert.equal(effVoiceFor('hermes', voice), 'marin');
 }
 assert.equal(effVoiceFor('codex', 'cove'), 'cove');

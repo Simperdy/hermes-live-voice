@@ -24,7 +24,7 @@ def test_voice_labels_keep_language_without_per_option_warning(locale, hint):
     result = subprocess.run(['node', '-e', script], text=True, capture_output=True)
     assert result.returncode == 0, result.stderr
     data = json.loads(result.stdout)
-    assert data['label'] == 'Miko · Deutsch'
+    assert data['label'] == 'Miko'
     assert data['id'] == 'miko'
     assert hint in data['hint']
 

@@ -40,7 +40,7 @@ const ALL_V3_VOICES = V3_VOICES.concat(V3_EXPERIMENTAL_VOICES)
 const voiceOptionLabel = voice => {
   const details = V3_EXPERIMENTAL_LABELS[voice]
   const name = details ? details[0] : voice.charAt(0).toUpperCase() + voice.slice(1)
-  return details ? `${name} · ${details[1]}` : name
+  return name
 }
 const voiceGroupsFor = engine => {
   if (engine !== 'codex') return [{ label: 'Hermes', voices: VOICES.map(id => ({ id, label: voiceOptionLabel(id) })).sort((a, b) => a.label.localeCompare(b.label, 'en')) }]
