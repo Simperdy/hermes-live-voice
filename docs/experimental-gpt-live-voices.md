@@ -1,6 +1,8 @@
 # Experimental Codex GPT-Live voices
 
-This branch makes all currently schema-backed new ChatGPT Live voices manually selectable in the Codex Live engine. Each appears with its voice name, an indicative language hint, and “experimental — not verified.” The language hint describes the voice’s official grouping; it is not a restriction on the language it can speak. Existing stable voices, engine-specific selection, the `cove` fallback, and the configured Codex model remain unchanged.
+This branch makes all currently schema-backed new ChatGPT Live voices manually selectable in the Codex Live engine. Each appears with its voice name and indicative language hint; the per-option “experimental — not verified” warning has been removed from the UI. The language hint describes the voice’s official grouping; it is not a restriction on the language it can speak. Existing stable voices, engine-specific selection, the `cove` fallback, and the configured Codex model remain unchanged.
+
+Live-test status: one user-selected voice has been tested successfully in a real session. This is evidence only for that selected voice and session; the voice identity is intentionally not asserted here. The other schema-backed choices have not all been individually tested end to end. Removing the UI warning does not imply that every choice is live-validated or available on every account/region.
 
 ## Included voices and evidence
 
@@ -21,7 +23,7 @@ The current [Codex app-server `RealtimeVoice` schema](https://github.com/openai/
 
 OpenAI lists Arrullo for Mexican Spanish too, but `arrullo` is absent from the inspected Codex `RealtimeVoice` enum. It is therefore intentionally not exposed: there is no verified Codex ID to send, and this branch does not guess a mapping.
 
-Schema acceptance confirms the request IDs, not end-to-end support of each voice by every installed Codex/app-server or GPT-Live rollout. No authenticated session or generated audio was used to validate all voice identities here. Availability may also vary by account and region.
+Schema acceptance confirms the request IDs, not end-to-end support of each voice by every installed Codex/app-server or GPT-Live rollout. One selected voice was exercised in a real session as noted above, but the remaining choices have not all been individually verified. Availability may also vary by account and region.
 
 ## Manual test guidance
 

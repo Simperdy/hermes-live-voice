@@ -39,7 +39,7 @@ const V3_EXPERIMENTAL_LABELS = {
 const ALL_V3_VOICES = V3_VOICES.concat(V3_EXPERIMENTAL_VOICES)
 const voiceOptionLabel = voice => {
   const details = V3_EXPERIMENTAL_LABELS[voice]
-  return details ? `${details[0]} · ${details[1]} (${tr('Experimental — sin verificar', 'Experimental — not verified', 'Experimentell — nicht verifiziert')})` : voice
+  return details ? `${details[0]} · ${details[1]}` : voice
 }
 const voiceLanguageHint = () => tr(
   'La indicación describe la orientación regional de la voz, no su único idioma compatible.',
@@ -104,7 +104,6 @@ const DE = {
   'Speak and watch the bar: if it stays flat, this mic is not capturing.': 'Sprich und beobachte den Balken: Bewegt er sich nicht, nimmt das Mikrofon keinen Ton auf.',
   'Output': 'Ausgabe', 'Devices appear after granting the microphone the first time.': 'Geräte werden angezeigt, nachdem du den Mikrofonzugriff erstmals erlaubt hast.',
   'waiting…': 'Wird erwartet …', 'Active': 'Aktiv', ' (Codex renews it)': ' (Codex erneuert sie)', 'No session': 'Keine Sitzung', 'Signed in': 'Angemeldet', 'Session': 'Sitzung',
-  'Experimental — not verified': 'Experimentell — nicht verifiziert',
   'Preparing session…': 'Sitzung wird vorbereitet …', 'Establishing connection…': 'Verbindung wird hergestellt …', 'Connecting…': 'Verbindung wird hergestellt …',
   'disconnected': 'getrennt', 'failed': 'Fehlgeschlagen', 'closed': 'geschlossen',
   'What is this': 'Was ist das?',
