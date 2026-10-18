@@ -39,7 +39,27 @@ const V3_EXPERIMENTAL_LABELS = {
 const ALL_V3_VOICES = V3_VOICES.concat(V3_EXPERIMENTAL_VOICES)
 const voiceOptionLabel = voice => {
   const details = V3_EXPERIMENTAL_LABELS[voice]
-  return details ? `${details[0]} · ${details[1]}` : voice
+  const name = details ? details[0] : voice.charAt(0).toUpperCase() + voice.slice(1)
+  return details ? `${name} · ${details[1]}` : name
+}
+const voiceGroupsFor = engine => {
+  if (engine !== 'codex') return [{ label: 'Hermes', voices: VOICES.map(id => ({ id, label: voiceOptionLabel(id) })).sort((a, b) => a.label.localeCompare(b.label, 'en')) }]
+  const groups = new Map()
+  for (const id of ALL_V3_VOICES) {
+    const language = V3_EXPERIMENTAL_LABELS[id]?.[1] || 'Standard voices (multilingual)'
+    if (!groups.has(language)) groups.set(language, [])
+    groups.get(language).push({ id, label: voiceOptionLabel(id) })
+  }
+  const activeLanguage = ({ de: 'Deutsch', es: 'Español (México)', en: 'English' })[LANGUAGE]
+  const labels = [...groups.keys()].sort((a, b) => {
+    if (a === activeLanguage) return -1
+    if (b === activeLanguage) return 1
+    return a.localeCompare(b, 'en')
+  })
+  return labels.map(label => ({
+    label: label === 'Standard voices (multilingual)' ? ({ de: 'Standardstimmen (mehrsprachig)', es: 'Voces estándar (multilingües)', en: label })[LANGUAGE] : label,
+    voices: groups.get(label).sort((a, b) => a.label.localeCompare(b.label, 'en'))
+  }))
 }
 const voiceLanguageHint = () => tr(
   'La indicación describe la orientación regional de la voz, no su único idioma compatible.',
@@ -1196,7 +1216,10 @@ function ConfigForm({ ctx, dense = false }) {
       jsx('div', { style: label, children: tr('Voz', 'Voice') }),
       jsxs(Select, { value: effVoiceFor(engine, voice), onValueChange: setVoice, children: [
         jsx(SelectTrigger, { style: trigStyle, children: jsx(SelectValue, { style: valStyle }) }),
-        jsx(SelectContent, { children: (engine === 'codex' ? ALL_V3_VOICES : VOICES).map(v => jsx(SelectItem, { value: v, children: voiceOptionLabel(v) }, v)) })
+        jsx(SelectContent, { children: voiceGroupsFor(engine).map(group => jsx('div', { role: 'group', 'aria-label': group.label, children: [
+          jsx('div', { 'aria-hidden': 'true', style: { padding: '6px 10px 3px', fontSize: 10, fontWeight: 700, color: 'var(--ui-text-tertiary)' }, children: group.label }, 'group-label-' + group.label),
+          ...group.voices.map(({ id, label }) => jsx(SelectItem, { value: id, children: label }, id))
+        ] }, 'group-' + group.label)) })
       ] }),
       engine === 'codex' && jsx('div', { style: { fontSize: 11, color: 'var(--ui-text-tertiary)', marginTop: 4 }, children: voiceLanguageHint() }),
       jsxs('div', { style: { display: 'none', alignItems: 'center', gap: 8, marginTop: 6 }, children: [   // preview desactivado por ahora

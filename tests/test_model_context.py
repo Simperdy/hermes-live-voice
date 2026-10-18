@@ -403,7 +403,7 @@ assert.equal(effVoiceFor('codex', 'cove'), 'cove');
 assert.equal(effVoiceFor('codex', 'unknown'), 'cove');
 assert.equal(effVoiceFor('codex', 'arrullo'), 'cove');
 assert.equal(effVoiceFor('hermes', 'miko'), 'marin');
-assert.equal(voiceOptionLabel('cove'), 'cove');
+assert.equal(voiceOptionLabel('cove'), 'Cove');
 assert.deepEqual(V3_VOICES, ['cove', 'juniper', 'maple', 'spruce', 'ember', 'vale', 'breeze', 'arbor', 'sol']);
 assert.deepEqual(VOICES, ['marin', 'cedar', 'alloy', 'echo', 'shimmer', 'verse', 'sage', 'ballad']);
 '''
