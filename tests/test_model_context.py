@@ -372,8 +372,8 @@ def test_desktop_session_request_bodies(english):
     assert result.returncode == 0, result.stderr
 
 
-def test_codex_experimental_voices_are_opt_in_and_keep_existing_default():
-    """Experimental IDs must round-trip only for Codex; all old defaults stay stable."""
+def test_codex_official_experimental_voices_are_opt_in_and_keep_existing_defaults():
+    """Verified Live IDs round-trip only for Codex; defaults and stable lists stay unchanged."""
     import re
     source = (REPO / 'desktop/plugin.js').read_text()
     match = re.search(r"const V3_VOICES = .*?\nconst SENTINEL_DEFAULT", source, re.S)
@@ -381,13 +381,31 @@ def test_codex_experimental_voices_are_opt_in_and_keep_existing_default():
     script = 'const assert = require("node:assert/strict");\nconst VOICES = ["marin", "cedar", "alloy", "echo", "shimmer", "verse", "sage", "ballad"];\n'
     script += match.group(0).replace('\nconst SENTINEL_DEFAULT', '\n')
     script += '''
-assert.equal(effVoiceFor('codex', 'miko'), 'miko');
-assert.equal(effVoiceFor('codex', 'sonna'), 'sonna');
+const expectedVoiceLanguages = {
+  aube: ['Aube', 'Français'], bubbie: ['Bubbie', 'English'],
+  haetsal: ['Haetsal', '한국어'], hanul: ['Hanul', '한국어'], himari: ['Himari', '日本語'],
+  leher: ['Leher', 'हिन्दी'], miko: ['Miko', 'Deutsch'], neer: ['Neer', 'हिन्दी'],
+  rindo: ['Rindo', '日本語'], rio: ['Rio', 'Português (Brasil)'],
+  rivage: ['Rivage', 'Français'], sonna: ['Sonna', 'Deutsch'],
+  tinta: ['Tinta', 'Español (México)'], viola: ['Viola', 'Português (Brasil)']
+};
+const expectedExperimental = Object.keys(expectedVoiceLanguages);
+assert.deepEqual([...new Set(V3_EXPERIMENTAL_VOICES)].sort(), [...expectedExperimental].sort());
+assert.deepEqual(Object.keys(V3_EXPERIMENTAL_LABELS).sort(), [...expectedExperimental].sort());
+assert.equal(V3_EXPERIMENTAL_VOICES.length, expectedExperimental.length);
+assert.equal(new Set([...V3_VOICES, ...V3_EXPERIMENTAL_VOICES]).size, V3_VOICES.length + V3_EXPERIMENTAL_VOICES.length);
+for (const [voice, [name, language]] of Object.entries(expectedVoiceLanguages)) {
+  assert.equal(effVoiceFor('codex', voice), voice);
+  assert.equal(voiceOptionLabel(voice), `${name} · ${language} (experimental — not verified)`);
+  assert.equal(effVoiceFor('hermes', voice), 'marin');
+}
+assert.equal(effVoiceFor('codex', 'cove'), 'cove');
 assert.equal(effVoiceFor('codex', 'unknown'), 'cove');
+assert.equal(effVoiceFor('codex', 'arrullo'), 'cove');
 assert.equal(effVoiceFor('hermes', 'miko'), 'marin');
-assert.equal(voiceOptionLabel('miko'), 'miko (experimental — not verified)');
-assert.equal(voiceOptionLabel('sonna'), 'sonna (experimental — not verified)');
 assert.equal(voiceOptionLabel('cove'), 'cove');
+assert.deepEqual(V3_VOICES, ['cove', 'juniper', 'maple', 'spruce', 'ember', 'vale', 'breeze', 'arbor', 'sol']);
+assert.deepEqual(VOICES, ['marin', 'cedar', 'alloy', 'echo', 'shimmer', 'verse', 'sage', 'ballad']);
 '''
     result = subprocess.run(['node', '-e', script], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr

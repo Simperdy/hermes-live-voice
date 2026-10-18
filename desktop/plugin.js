@@ -25,12 +25,22 @@ const KEY_CHAT = 'chatwork.v1'
 const KEY_ENGINE = 'engine.v1'
 const VOICES = ['marin', 'cedar', 'alloy', 'echo', 'shimmer', 'verse', 'sage', 'ballad']
 const V3_VOICES = ['cove', 'juniper', 'maple', 'spruce', 'ember', 'vale', 'breeze', 'arbor', 'sol']
-// Codex app-server schema includes these voice IDs, but live GPT-Live rollout support is
-// not yet exercised end-to-end here; expose them only as explicit experimental choices.
-const V3_EXPERIMENTAL_VOICES = ['miko', 'sonna']
+// Codex app-server schema includes these GPT-Live voice IDs, but live rollout support is not
+// exercised end-to-end here; expose them only as explicit experimental choices.
+const V3_EXPERIMENTAL_VOICES = ['aube', 'bubbie', 'haetsal', 'hanul', 'himari', 'leher', 'miko', 'neer', 'rindo', 'rio', 'rivage', 'sonna', 'tinta', 'viola']
+const V3_EXPERIMENTAL_LABELS = {
+  aube: ['Aube', 'Français'], bubbie: ['Bubbie', 'English'],
+  haetsal: ['Haetsal', '한국어'], hanul: ['Hanul', '한국어'], himari: ['Himari', '日本語'],
+  leher: ['Leher', 'हिन्दी'], miko: ['Miko', 'Deutsch'], neer: ['Neer', 'हिन्दी'],
+  rindo: ['Rindo', '日本語'], rio: ['Rio', 'Português (Brasil)'],
+  rivage: ['Rivage', 'Français'], sonna: ['Sonna', 'Deutsch'],
+  tinta: ['Tinta', 'Español (México)'], viola: ['Viola', 'Português (Brasil)']
+}
 const ALL_V3_VOICES = V3_VOICES.concat(V3_EXPERIMENTAL_VOICES)
-const voiceOptionLabel = voice => V3_EXPERIMENTAL_VOICES.includes(voice)
-  ? voice + ' (experimental — not verified)' : voice
+const voiceOptionLabel = voice => {
+  const details = V3_EXPERIMENTAL_LABELS[voice]
+  return details ? `${details[0]} · ${details[1]} (experimental — not verified)` : voice
+}
 const effVoiceFor = (engine, stored) => {
   const v = String(stored || '')
   if (engine === 'codex') return ALL_V3_VOICES.indexOf(v) >= 0 ? v : 'cove'
