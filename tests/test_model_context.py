@@ -372,6 +372,27 @@ def test_desktop_session_request_bodies(english):
     assert result.returncode == 0, result.stderr
 
 
+def test_codex_experimental_voices_are_opt_in_and_keep_existing_default():
+    """Experimental IDs must round-trip only for Codex; all old defaults stay stable."""
+    import re
+    source = (REPO / 'desktop/plugin.js').read_text()
+    match = re.search(r"const V3_VOICES = .*?\nconst SENTINEL_DEFAULT", source, re.S)
+    assert match, 'Codex voice selection definitions not found'
+    script = 'const assert = require("node:assert/strict");\nconst VOICES = ["marin", "cedar", "alloy", "echo", "shimmer", "verse", "sage", "ballad"];\n'
+    script += match.group(0).replace('\nconst SENTINEL_DEFAULT', '\n')
+    script += '''
+assert.equal(effVoiceFor('codex', 'miko'), 'miko');
+assert.equal(effVoiceFor('codex', 'sonna'), 'sonna');
+assert.equal(effVoiceFor('codex', 'unknown'), 'cove');
+assert.equal(effVoiceFor('hermes', 'miko'), 'marin');
+assert.equal(voiceOptionLabel('miko'), 'miko (experimental — not verified)');
+assert.equal(voiceOptionLabel('sonna'), 'sonna (experimental — not verified)');
+assert.equal(voiceOptionLabel('cove'), 'cove');
+'''
+    result = subprocess.run(['node', '-e', script], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+
+
 @pytest.mark.parametrize('language', [None, 'es', 'en', 'de'])
 def test_tool_route_localizes_unavailable_error(language):
     ns = load_unit(PLUGIN_API, 'run_tool')

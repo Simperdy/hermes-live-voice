@@ -25,9 +25,15 @@ const KEY_CHAT = 'chatwork.v1'
 const KEY_ENGINE = 'engine.v1'
 const VOICES = ['marin', 'cedar', 'alloy', 'echo', 'shimmer', 'verse', 'sage', 'ballad']
 const V3_VOICES = ['cove', 'juniper', 'maple', 'spruce', 'ember', 'vale', 'breeze', 'arbor', 'sol']
+// Codex app-server schema includes these voice IDs, but live GPT-Live rollout support is
+// not yet exercised end-to-end here; expose them only as explicit experimental choices.
+const V3_EXPERIMENTAL_VOICES = ['miko', 'sonna']
+const ALL_V3_VOICES = V3_VOICES.concat(V3_EXPERIMENTAL_VOICES)
+const voiceOptionLabel = voice => V3_EXPERIMENTAL_VOICES.includes(voice)
+  ? voice + ' (experimental — not verified)' : voice
 const effVoiceFor = (engine, stored) => {
   const v = String(stored || '')
-  if (engine === 'codex') return V3_VOICES.indexOf(v) >= 0 ? v : 'cove'
+  if (engine === 'codex') return ALL_V3_VOICES.indexOf(v) >= 0 ? v : 'cove'
   return VOICES.indexOf(v) >= 0 ? v : 'marin'
 }
 const SENTINEL_DEFAULT = '__default'
@@ -1172,7 +1178,7 @@ function ConfigForm({ ctx, dense = false }) {
       jsx('div', { style: label, children: tr('Voz', 'Voice') }),
       jsxs(Select, { value: effVoiceFor(engine, voice), onValueChange: setVoice, children: [
         jsx(SelectTrigger, { style: trigStyle, children: jsx(SelectValue, { style: valStyle }) }),
-        jsx(SelectContent, { children: (engine === 'codex' ? V3_VOICES : VOICES).map(v => jsx(SelectItem, { value: v, children: v }, v)) })
+        jsx(SelectContent, { children: (engine === 'codex' ? ALL_V3_VOICES : VOICES).map(v => jsx(SelectItem, { value: v, children: voiceOptionLabel(v) }, v)) })
       ] }),
       jsxs('div', { style: { display: 'none', alignItems: 'center', gap: 8, marginTop: 6 }, children: [   // preview desactivado por ahora
         jsx(Button, {
