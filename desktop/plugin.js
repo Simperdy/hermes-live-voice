@@ -61,6 +61,7 @@ const LANGUAGE = (() => {
 })()
 const EN = LANGUAGE === 'en'
 const DE = {
+  'Weekly': 'Woche',
   'The language label describes the voice’s regional focus, not its only supported language.': 'Die Sprachangabe beschreibt die regionale Ausrichtung der Stimme, nicht ihre einzige unterstützte Sprache.',
   'The sign-in code expired before approval.': 'Der Anmeldecode ist vor der Bestätigung abgelaufen.',
   'Sign-in failed': 'Anmeldung fehlgeschlagen',
@@ -120,6 +121,9 @@ const DE = {
   'The transcript shows up here when you start talking.': 'Das Transkript erscheint hier, sobald du sprichst.', 'new': 'neu'
 }
 const tr = (es, en, de) => LANGUAGE === 'de' ? (de || DE[en] || en) : (EN ? en : es)
+
+const usageWindowLabel = label => ['semanal', 'weekly'].includes(String(label).trim().toLowerCase())
+  ? tr('Semanal', 'Weekly', 'Woche') : label
 
 // A POST to /api/plugins/talk-desktop/* that the dashboard does not route (backend half not
 // loaded) falls into its GET-only SPA catch-all and comes back as a bare "Method Not Allowed"
@@ -1439,7 +1443,7 @@ function CodexSection({ ctx }) {
         }
         return jsxs('div', { style: { fontSize: 10.5, color: 'var(--ui-text-tertiary, #71717a)', marginBottom: 5 }, children: [
           jsxs('div', { style: { display: 'flex', justifyContent: 'space-between' }, children: [
-            jsx('span', { children: label }),
+            jsx('span', { children: usageWindowLabel(label) }),
             jsx('span', { style: { fontWeight: 700, color }, children: pct + tr('% usado', '% used') + ' · ' + (100 - pct) + tr('% libre', '% left') + (pct >= 90 ? tr(' — cerca del límite', ' — near limit') : '') })
           ] }),
           jsx('div', { style: { height: 4, borderRadius: 2, background: 'rgba(127,127,127,0.18)', marginTop: 2, overflow: 'hidden' }, children:
