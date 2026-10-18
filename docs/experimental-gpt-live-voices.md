@@ -1,6 +1,6 @@
 # Experimental Codex GPT-Live voices
 
-This branch makes all currently schema-backed new ChatGPT Live voices manually selectable in the Codex Live engine. Each appears with its voice name and indicative language hint; the per-option “experimental — not verified” warning has been removed from the UI. The language hint describes the voice’s official grouping; it is not a restriction on the language it can speak. Existing stable voices, engine-specific selection, the `cove` fallback, and the configured Codex model remain unchanged.
+This branch makes all currently schema-backed new ChatGPT Live voices manually selectable in the Codex Live engine. Each appears under a language category with a consistently capitalized voice name; the per-option “experimental — not verified” warning has been removed from the UI. The language hint describes the voice’s official grouping; it is not a restriction on the language it can speak. Existing stable voices, engine-specific selection, the `cove` fallback, and the configured Codex model remain unchanged.
 
 Live-test status: one user-selected voice has been tested successfully in a real session. This is evidence only for that selected voice and session; the voice identity is intentionally not asserted here. The other schema-backed choices have not all been individually tested end to end. Removing the UI warning does not imply that every choice is live-validated or available on every account/region.
 
@@ -28,8 +28,7 @@ Schema acceptance confirms the request IDs, not end-to-end support of each voice
 ## Manual test guidance
 
 1. Use a separate reviewed copy of this branch in the Hermes Desktop environment that runs the Codex app-server; do not replace a stable install just to test it.
-2. Open Live Voice settings, keep Codex selected, and choose one of the language-labelled experimental options.
+2. Open Live Voice settings, keep Codex selected, and choose a voice under its language category.
 3. Start a session and compare the sound with the selected voice; speaking the hint language alone does not validate voice identity. Verify the requested voice ID in the realtime request or server logs if identity matters.
 4. If Codex rejects an ID or the session fails, record the error and Codex version. The plugin surfaces startup errors rather than retrying with `cove`.
 5. Re-select a stable voice to return to the established path. Do not publish or deploy based only on schema acceptance; complete live checks separately first.
-
