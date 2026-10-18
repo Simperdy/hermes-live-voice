@@ -378,7 +378,7 @@ def test_codex_official_experimental_voices_are_opt_in_and_keep_existing_default
     source = (REPO / 'desktop/plugin.js').read_text()
     match = re.search(r"const V3_VOICES = .*?\nconst SENTINEL_DEFAULT", source, re.S)
     assert match, 'Codex voice selection definitions not found'
-    script = 'const assert = require("node:assert/strict");\nconst VOICES = ["marin", "cedar", "alloy", "echo", "shimmer", "verse", "sage", "ballad"];\n'
+    script = 'const assert = require("node:assert/strict"); const tr = (es, en) => en;\nconst VOICES = ["marin", "cedar", "alloy", "echo", "shimmer", "verse", "sage", "ballad"];\n'
     script += match.group(0).replace('\nconst SENTINEL_DEFAULT', '\n')
     script += '''
 const expectedVoiceLanguages = {
@@ -396,7 +396,7 @@ assert.equal(V3_EXPERIMENTAL_VOICES.length, expectedExperimental.length);
 assert.equal(new Set([...V3_VOICES, ...V3_EXPERIMENTAL_VOICES]).size, V3_VOICES.length + V3_EXPERIMENTAL_VOICES.length);
 for (const [voice, [name, language]] of Object.entries(expectedVoiceLanguages)) {
   assert.equal(effVoiceFor('codex', voice), voice);
-  assert.equal(voiceOptionLabel(voice), `${name} · ${language} (experimental — not verified)`);
+  assert.equal(voiceOptionLabel(voice), `${name} · ${language} (Experimental — not verified)`);
   assert.equal(effVoiceFor('hermes', voice), 'marin');
 }
 assert.equal(effVoiceFor('codex', 'cove'), 'cove');

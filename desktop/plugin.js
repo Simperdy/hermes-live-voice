@@ -39,8 +39,12 @@ const V3_EXPERIMENTAL_LABELS = {
 const ALL_V3_VOICES = V3_VOICES.concat(V3_EXPERIMENTAL_VOICES)
 const voiceOptionLabel = voice => {
   const details = V3_EXPERIMENTAL_LABELS[voice]
-  return details ? `${details[0]} · ${details[1]} (experimental — not verified)` : voice
+  return details ? `${details[0]} · ${details[1]} (${tr('Experimental — sin verificar', 'Experimental — not verified', 'Experimentell — nicht verifiziert')})` : voice
 }
+const voiceLanguageHint = () => tr(
+  'La indicación describe la orientación regional de la voz, no su único idioma compatible.',
+  'The language label describes the voice’s regional focus, not its only supported language.',
+  'Die Sprachangabe beschreibt die regionale Ausrichtung der Stimme, nicht ihre einzige unterstützte Sprache.')
 const effVoiceFor = (engine, stored) => {
   const v = String(stored || '')
   if (engine === 'codex') return ALL_V3_VOICES.indexOf(v) >= 0 ? v : 'cove'
@@ -57,6 +61,7 @@ const LANGUAGE = (() => {
 })()
 const EN = LANGUAGE === 'en'
 const DE = {
+  'The language label describes the voice’s regional focus, not its only supported language.': 'Die Sprachangabe beschreibt die regionale Ausrichtung der Stimme, nicht ihre einzige unterstützte Sprache.',
   'The sign-in code expired before approval.': 'Der Anmeldecode ist vor der Bestätigung abgelaufen.',
   'Sign-in failed': 'Anmeldung fehlgeschlagen',
   'Codex CLI was not found on the server.': 'Codex CLI wurde auf dem Server nicht gefunden.',
@@ -1190,6 +1195,7 @@ function ConfigForm({ ctx, dense = false }) {
         jsx(SelectTrigger, { style: trigStyle, children: jsx(SelectValue, { style: valStyle }) }),
         jsx(SelectContent, { children: (engine === 'codex' ? ALL_V3_VOICES : VOICES).map(v => jsx(SelectItem, { value: v, children: voiceOptionLabel(v) }, v)) })
       ] }),
+      engine === 'codex' && jsx('div', { style: { fontSize: 11, color: 'var(--ui-text-tertiary)', marginTop: 4 }, children: voiceLanguageHint() }),
       jsxs('div', { style: { display: 'none', alignItems: 'center', gap: 8, marginTop: 6 }, children: [   // preview desactivado por ahora
         jsx(Button, {
           variant: 'secondary', size: 'sm', onClick: runPreview, style: { flexShrink: 0 },
